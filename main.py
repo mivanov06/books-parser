@@ -1,9 +1,10 @@
 import argparse
 import os
-import requests
 
-from bs4_tutorial import check_for_redirect, get_soup, parse_book_page
+import requests
 from pathvalidate import sanitize_filename
+
+from bs4_functions import check_for_redirect, get_soup, parse_book_page
 
 
 def download_file(url, filename, folder):

@@ -1,10 +1,10 @@
 import re
+from urllib.parse import unquote
+from urllib.parse import urljoin
 
 import requests
 from bs4 import BeautifulSoup
 from requests import HTTPError
-from urllib.parse import urljoin
-from urllib.parse import unquote
 
 
 def check_for_redirect(response):

@@ -1,14 +1,29 @@
+import os
+
 import requests
 
-from bs4_tutorial import parse_book_page
+from bs4_tutorial import parse_book_page, check_for_redirect
+from pathvalidate import sanitize_filename
 
 
-def check_for_redirect(response):
-    if response.history and response.history[0].status_code in [300, 301]:
-        raise requests.exceptions.HTTPError
+def download_file(url, filename, folder='books', payload={}):
+    response = requests.get(url, params=payload, allow_redirects=True)
+    response.raise_for_status()
+    check_for_redirect(response)
+
+    sanitazed_filename = sanitize_filename(filename)
+    os.makedirs(folder, exist_ok=True)
+    filepath = os.path.join(folder, sanitazed_filename)
+
+    with open(filepath, 'wb') as file:
+        file.write(response.content)
+    return file.name
 
 
 if __name__ == '__main__':
-    id = 32168
-    url = f'https://tululu.org/b{id}/'
-    print(parse_book_page(url))
+    url = 'https://tululu.org'
+    books_folder = 'books'
+    book_id = 1
+    parse_book_page = parse_book_page(url, book_id)
+    filepath = download_file(parse_book_page['full_text_url'], parse_book_page['title'], books_folder)
+

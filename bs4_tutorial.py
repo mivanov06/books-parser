@@ -3,6 +3,8 @@ import re
 import requests
 from bs4 import BeautifulSoup
 from requests import HTTPError
+from urllib.parse import urljoin
+from urllib.parse import unquote
 
 
 def check_for_redirect(response):
@@ -10,7 +12,26 @@ def check_for_redirect(response):
         raise HTTPError
 
 
-def parse_book_page(url, book_id):
+def get_image_data(soup):
+    url = 'http://tululu.org'
+    image_tag = soup.find(class_='bookimage').find('img')['src']
+    image_url = urljoin(url, image_tag)
+    image_filename = unquote(image_url.split('/')[-1])
+    print(f'{image_url=}\n'
+          f'{image_filename=}')
+    return image_url, image_filename
+
+
+def get_full_text_url(soup):
+    url = 'http://tululu.org'
+    full_text_url = soup.find(href=re.compile('txt.php'))['href']
+    if full_text_url:
+        return urljoin(url, full_text_url)
+    else:
+        return None
+
+
+def parse_book_data(url, book_id):
     response = requests.get(f'{url}/b{book_id}/', allow_redirects=False)
     response.raise_for_status()
     check_for_redirect(response)
@@ -18,25 +39,17 @@ def parse_book_page(url, book_id):
 
     title, author = soup.find(id='content').find('h1').text.split('::')
 
-    image_url = soup.find(class_='bookimage').find('img')['src']
-    if image_url == '/images/nopic.gif':
-        image_url = None
-    else:
-        image_url = f"{url}{image_url}"
+    image_url, image_filename = get_image_data(soup)
 
     post_text = soup.findAll(class_='d_book')[2].find('tr').find('td').text
 
-    full_text_url = soup.find(href=re.compile('txt.php'))['href']
-
-    if full_text_url:
-        full_text_url = f'{url}{full_text_url}'
-    else:
-        full_text_url = None
+    full_text_url = get_full_text_url(soup)
     print(full_text_url)
     return {
         'title': title.strip(),
         'author': author.strip(),
         'image_url': image_url,
+        'image_filename': image_filename,
         'post_text': post_text,
         'full_text_url': full_text_url
     }

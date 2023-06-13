@@ -2,7 +2,7 @@ import os
 
 import requests
 
-from bs4_tutorial import parse_book_data, check_for_redirect
+from bs4_tutorial import check_for_redirect, get_soup, parse_book_page
 from pathvalidate import sanitize_filename
 
 
@@ -26,12 +26,13 @@ if __name__ == '__main__':
     for book_id in range(1, 11):
         print(book_id)
         try:
-            parse_page = parse_book_data(url, book_id)
-            filename = f"{book_id}. {sanitize_filename(parse_page['title'])}"
-            # if parse_page['full_text_url'] is not None:
-            #     download_file(parse_page['full_text_url'], filename, books_folder)
-            # download_file(parse_page['image_url'], parse_page['image_filename'], images_folder)
-
+            soup = get_soup(url, book_id)
+            parse_data = parse_book_page(soup)
+            print(parse_data)
+            book_filename = f"{book_id}. {sanitize_filename(parse_data['title'])}"
+            if parse_book_page['full_text_url'] is not None:
+                download_file(parse_book_page['full_text_url'], parse_data, books_folder)
+            download_file(parse_book_page['image_url'], parse_book_page['image_filename'], images_folder)
         except:
             print('Книга не скачана')
             continue

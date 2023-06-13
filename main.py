@@ -1,15 +1,14 @@
 import requests
 
-from pathlib import Path
+from bs4_tutorial import parse_book_page
 
 
-path = Path.cwd() / 'books'
-Path.mkdir(path, exist_ok=True)
-for i in range(10):
-    id = 3268 + i
-    url = f'https://tululu.org/txt.php?id={id}'
-    response = requests.get(url)
-    response.raise_for_status()
-    filename = f'id{id}.txt'
-    with open(path / filename, 'wb') as file:
-        file.write(response.content)
+def check_for_redirect(response):
+    if response.history and response.history[0].status_code in [300, 301]:
+        raise requests.exceptions.HTTPError
+
+
+if __name__ == '__main__':
+    id = 32168
+    url = f'https://tululu.org/b{id}/'
+    print(parse_book_page(url))

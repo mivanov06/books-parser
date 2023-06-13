@@ -12,8 +12,8 @@ def check_for_redirect(response):
         raise HTTPError
 
 
-def get_soup(url, book_id):
-    response = requests.get(f'{url}/b{book_id}/', allow_redirects=False)
+def get_soup(url):
+    response = requests.get(url, allow_redirects=False)
     response.raise_for_status()
     check_for_redirect(response)
     soup = BeautifulSoup(response.text, 'lxml')

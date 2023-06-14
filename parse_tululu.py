@@ -38,20 +38,13 @@ def get_full_text_url(soup):
 
 
 def get_comments(soup):
-    comments = []
     comments_soup = soup.find_all(class_='texts')
-    for comment_soup in comments_soup:
-        comment = comment_soup.find(class_='black').text
-        comments.append(comment)
-    return comments
+    return [comment.find(class_='black').text for comment in comments_soup]
 
 
 def get_genres(soup):
-    genres = []
     genres_soup = soup.find_all(class_='d_book')[1].find_all('a')
-    for genre_soup in genres_soup:
-        genres.append(genre_soup.text)
-    return genres
+    return [genre.text for genre in genres_soup]
 
 
 def parse_book_page(soup):

@@ -3,6 +3,7 @@ import os
 
 import requests
 from pathvalidate import sanitize_filename
+from requests.exceptions import HTTPError
 
 from parse_tululu import check_for_redirect, get_soup, parse_book_page
 
@@ -31,11 +32,12 @@ if __name__ == '__main__':
     start_id, end_id = args.start_id, args.end_id
     for book_id in range(start_id, end_id+1):
         try:
-            soup = get_soup(f'{url}/b{book_id}/')
-            parse_data = parse_book_page(soup)
-            book_filename = f"{book_id}. {sanitize_filename(parse_data['title'])}.txt"
-            if parse_data['full_text_url'] is not None:
-                download_file(parse_data['full_text_url'], book_filename, books_folder)
-            download_file(parse_data['image_url'], parse_data['image_filename'], images_folder)
-        except:
+            page_url = f'{url}/b{book_id}/'
+            soup = get_soup(page_url)
+            parsed_data = parse_book_page(soup, page_url)
+            book_filename = f"{book_id}. {sanitize_filename(parsed_data['title'])}.txt"
+            if parsed_data['full_text_url'] is not None:
+                download_file(parsed_data['full_text_url'], book_filename, books_folder)
+            download_file(parsed_data['image_url'], parsed_data['image_filename'], images_folder)
+        except HTTPError:
             continue

@@ -36,7 +36,7 @@ if __name__ == '__main__':
             soup = get_soup(page_url)
             parsed_data = parse_book_page(soup, page_url)
             book_filename = f"{book_id}. {sanitize_filename(parsed_data['title'])}.txt"
-            if parsed_data['full_text_url'] is not None:
+            if parsed_data['full_text_url']:
                 download_file(parsed_data['full_text_url'], book_filename, books_folder)
             download_file(parsed_data['image_url'], parsed_data['image_filename'], images_folder)
         except HTTPError:

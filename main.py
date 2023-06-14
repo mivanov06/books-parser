@@ -24,9 +24,9 @@ if __name__ == '__main__':
     url = 'https://tululu.org'
     books_folder = 'books'
     images_folder = 'images'
-    parser = argparse.ArgumentParser(description='Скрипт-парсер библиотеки tututu.com')
-    parser.add_argument('-s', '--start_id', help='', type=int, default=1)
-    parser.add_argument('-e', '--end_id', help='', type=int, default=10)
+    parser = argparse.ArgumentParser(description='Скрипт-парсер книг библиотеки tututu.com в определенном диапазоне ID')
+    parser.add_argument('-s', '--start_id', help='ID первой книги для скачивания', type=int, default=1)
+    parser.add_argument('-e', '--end_id', help='ID последней книги для скачивания', type=int, default=10)
     args = parser.parse_args()
     start_id, end_id = args.start_id, args.end_id
     for book_id in range(start_id, end_id+1):

@@ -8,12 +8,12 @@ from requests.exceptions import HTTPError
 
 
 def check_for_redirect(response):
-    if response.status_code in [301, 302]:
+    if response.history:
         raise HTTPError
 
 
 def get_soup(url):
-    response = requests.get(url, allow_redirects=False)
+    response = requests.get(url, allow_redirects=True)
     response.raise_for_status()
     check_for_redirect(response)
     soup = BeautifulSoup(response.text, 'lxml')

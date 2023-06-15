@@ -1,6 +1,7 @@
 import argparse
 import os
 import sys
+from time import sleep
 
 import requests
 from pathvalidate import sanitize_filename
@@ -44,3 +45,4 @@ if __name__ == '__main__':
             print(f'Страница {page_url} не найдена.', err, file=sys.stderr)
         except ConnectionError as err:
             print(f'Ошибка соединения, сервер не отвечает: страница {page_url}', err, file=sys.stderr)
+            sleep(30)

@@ -36,11 +36,11 @@ if __name__ == '__main__':
         page_url = f'{url}/b{book_id}/'
         try:
             soup = get_soup(page_url)
-            parsed_data = parse_book_page(soup, page_url)
-            book_filename = f"{book_id}. {sanitize_filename(parsed_data['title'])}.txt"
-            if parsed_data['full_text_url']:
-                download_file(parsed_data['full_text_url'], book_filename, books_folder)
-            download_file(parsed_data['image_url'], parsed_data['image_filename'], images_folder)
+            book = parse_book_page(soup, page_url)
+            book_filename = f"{book_id}. {sanitize_filename(book['title'])}.txt"
+            if book['full_text_url']:
+                download_file(book['full_text_url'], book_filename, books_folder)
+            download_file(book['image_url'], book['image_filename'], images_folder)
         except HTTPError as err:
             print(f'Страница {page_url} не найдена.', err, file=sys.stderr)
         except ConnectionError as err:
